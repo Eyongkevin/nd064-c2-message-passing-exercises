@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, make_response
 
-from .services.notifications import send_notifications
+from .services.employees import get_employees
 
 app = Flask(__name__)
 
@@ -9,16 +9,12 @@ app = Flask(__name__)
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Server-Side_Access_Control
 
 
-@app.route('/api/employees/notifications', methods=['POST'])
-def notifications():
-    # Notifications service can be used to remind employees to fill out their timecards
-    employee_emails = [employee.get('email') for employee in get_employees()]
-    send_notifications(employee_emails)
-
+@app.route('/api/employees', methods=['GET'])
+def employees():
+    """Return a JSON response for all employees."""
     sample_response = {
-        "recipients": employee_emails
+        "employees": get_employees()
     }
-
     # JSONify response
     response = make_response(jsonify(sample_response))
 
@@ -26,3 +22,4 @@ def notifications():
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
 
     return response
+
